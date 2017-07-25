@@ -3,30 +3,37 @@ import cv2
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Input, Dropout, Activation, Flatten, Dense, Lambda
-from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import Conv2D, Cropping2d
 from keras.layers.pooling import MaxPooling2D
 
 lines = []
-
+images = []
+measurements = []
 with open('./data/set2/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
-        lines.append(line)
+        # lines.append(line)
+        steering_center = float(line[3])
+        # create adjusted steering measurements for the side camera images
+        correction = 0.2 # this is a parameter to tune
+        steering_left = steering_center + correction
+        steering_right = steering_center - correction
+        # read in images from center, left and right cameras
+        for i in range(3):
+            source_path = line[i]
+            file_name = source_path.split('/')[-1]
+            current_path = './data/set2/IMG/' + file_name
+            image = cv2.imread(current_path)
+            images.append(image)
+        measurements.append(steering_center)
+        measurements.append(steering_left)
+        measurements.append(steering_right)
 
-images = []
-measurements = []
-for line in lines:
-    source_path = line[0]
-    file_name = source_path.split('/')[-1]
-    current_path = './data/set2/IMG/' + file_name
-    image = cv2.imread(current_path)
-    images.append(image)
-    measurement = float(line[3])
-    measurements.append(measurement)
 
 augmented_images = []
 augmented_measurements = []
-for image, measurment in zip(images, measurements):
+for image, measurement in zip(images, measurements):
+    print('measurement', measurement)
     augmented_images.append(image)
     augmented_measurements.append(measurement)
     augmented_images.append(cv2.flip(image, 1))
@@ -36,7 +43,8 @@ X_train = np.array(augmented_images)
 y_train = np.array(augmented_measurements)
 
 model = Sequential()
-model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(160,320,3)))
+model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
+model.add(Lambda(lambda x: (x/255.0) - 0.5))
 
 model.add(Conv2D(6, 5, 5, activation='relu'))
 model.add(MaxPooling2D())
@@ -48,9 +56,10 @@ model.add(MaxPooling2D())
 model.add(Flatten())
 model.add(Dense(120))
 model.add(Dense(84))
+model.add(Dropout(0.5))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, epochs=10)
+model.fit(X_train, y_train, validation_split=0.2, shuffle=True, epochs=5)
 
 model.save('model.h5')
