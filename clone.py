@@ -10,10 +10,9 @@ from keras.layers.pooling import MaxPooling2D
 lines = []
 images = []
 measurements = []
-with open('./data/set2/driving_log.csv') as csvfile:
+with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
-        # lines.append(line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
         correction = 0.3 # this is a parameter to tune
@@ -23,7 +22,7 @@ with open('./data/set2/driving_log.csv') as csvfile:
         for i in range(3):
             source_path = line[i]
             file_name = source_path.split('/')[-1]
-            current_path = './data/set2/IMG/' + file_name
+            current_path = './data/set3/IMG/' + file_name
             image = cv2.imread(current_path)
             images.append(image)
         measurements.append(steering_center)
@@ -57,7 +56,6 @@ model.add(MaxPooling2D())
 model.add(Conv2D(64, (2, 2), activation='relu'))  
 model.add(MaxPooling2D())
 model.summary()
-#model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(1164))
