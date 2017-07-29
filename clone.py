@@ -15,7 +15,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
     for line in reader:
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.33 # this is a parameter to tune
+        correction = 0.3 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
@@ -59,15 +59,16 @@ model.summary()
 
 model.add(Flatten())
 model.add(Dense(1164))
-#model.add(Dropout(0.5))
+model.add(Dropout(0.5))
 model.add(Dense(100))
 model.add(Dropout(0.5))
 model.add(Dense(50))
+model.add(Dropout(0.5))
 model.add(Dense(10))
 model.add(Dropout(0.5))
 model.add(Dense(1))
 model.summary()
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, epochs=5)
+model.fit(X_train, y_train, validation_split=0.2, shuffle=True, batch_size=128, epochs=5)
 
 model.save('model.h5')
