@@ -13,7 +13,7 @@ images = []
 measurements = []
 with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
-    for line in itertools.islice(reader, 0, 19000):
+    for line in itertools.islice(reader, 0, 14338):
         #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
@@ -51,26 +51,32 @@ model.add(Conv2D(24, (4, 4)))
 model.add(BatchNormalization(axis=1))
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
+model.add(Dropout(0.25))
 
 model.add(Conv2D(36, (4, 4)))  
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
+model.add(Dropout(0.25))
 
 model.add(Conv2D(48, (4, 4)))  
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
+model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (2, 2)))  
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
+model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (2, 2)))  
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
+model.add(Dropout(0.25))
+
 model.summary()
 
 model.add(Flatten())
