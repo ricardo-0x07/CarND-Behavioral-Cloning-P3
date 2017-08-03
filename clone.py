@@ -13,7 +13,7 @@ images = []
 measurements = []
 with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
-    for line in itertools.islice(reader, 0, 19000):
+    for line in itertools.islice(reader, 0, 15000):
         #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
