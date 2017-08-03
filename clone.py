@@ -1,7 +1,12 @@
+
 import itertools
 import csv
 import cv2
 import numpy as np
+import os
+from keras import backend as K
+#if K.backend() != "tensorflow":
+#    os.environ['KERAS_BACKEND'] = "tensorflow"
 from keras.models import Sequential
 from keras.layers import Input, Dropout, Activation, Flatten, Dense, Lambda
 from keras.layers.convolutional import Conv2D
@@ -11,13 +16,21 @@ from keras.layers.normalization import BatchNormalization
 lines = []
 images = []
 measurements = []
+
+def resize_function(input):
+    import tensorflow as ktf
+    new_height = ktf.convert_to_tensor(45)
+    new_width = ktf.convert_to_tensor(160)
+    return ktf.image.resize_images(input, (new_height, new_width))
+    #return cv2.resize(input, (45, 160), interpolation = cv2.INTER_AREA)
+
 with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
-    for line in itertools.islice(reader, 0, 15000):
+    for line in itertools.islice(reader, 0, 19000):
         #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.2 # this is a parameter to tune
+        correction = 0.1 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
@@ -46,6 +59,7 @@ y_train = np.array(augmented_measurements)
 model = Sequential()
 model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
 model.add(Lambda(lambda x: (x/255.0) - 0.5))
+#model.add(Lambda(lambda x: resize_function(x)))
 
 model.add(Conv2D(24, (4, 4)))
 model.add(BatchNormalization(axis=1))
