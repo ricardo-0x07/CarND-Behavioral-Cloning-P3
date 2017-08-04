@@ -17,12 +17,11 @@ lines = []
 images = []
 measurements = []
 
-def resize_function(input):
-    import tensorflow as ktf
-    new_height = ktf.convert_to_tensor(45)
-    new_width = ktf.convert_to_tensor(160)
-    return ktf.image.resize_images(input, (new_height, new_width))
-    #return cv2.resize(input, (45, 160), interpolation = cv2.INTER_AREA)
+def resize_function(image):
+    image = image[60:140]
+    image = cv2.resize(image, (160, 45), interpolation = cv2.INTER_AREA)
+    #image = image.reshape(45,160,1)
+    return  image
 
 with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
@@ -39,6 +38,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
             file_name = source_path.split('/')[-1]
             current_path = './data/set3/IMG/' + file_name
             image = cv2.imread(current_path)
+            image = resize_function(image)
             images.append(image)
         measurements.append(steering_center)
         measurements.append(steering_left)
@@ -57,39 +57,39 @@ X_train = np.array(augmented_images)
 y_train = np.array(augmented_measurements)
 
 model = Sequential()
-model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
-model.add(Lambda(lambda x: (x/255.0) - 0.5))
+#model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
+model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(45,160,3)))
 #model.add(Lambda(lambda x: resize_function(x)))
 
-model.add(Conv2D(24, (4, 4)))
+model.add(Conv2D(24, (2, 2)))
 model.add(BatchNormalization(axis=1))
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.5))
+#model.add(Dropout(0.5))
 
-model.add(Conv2D(36, (4, 4)))  
+model.add(Conv2D(36, (2, 2)))  
 model.add(BatchNormalization(axis=1))
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.5))
+#model.add(Dropout(0.5))
 
-model.add(Conv2D(48, (4, 4)))  
+model.add(Conv2D(48, (2, 2)))  
 model.add(BatchNormalization(axis=1))
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.5))
+#model.add(Dropout(0.5))
 
-model.add(Conv2D(64, (2, 2)))  
+model.add(Conv2D(64, (1, 1)))  
 model.add(BatchNormalization(axis=1))
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.5))
+#model.add(Dropout(0.5))
 
-model.add(Conv2D(64, (2, 2)))  
+model.add(Conv2D(64, (1, 1)))  
 model.add(BatchNormalization(axis=1))
 model.add(Activation('relu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.5))
+#model.add(Dropout(0.5))
 
 #model.summary()
 
