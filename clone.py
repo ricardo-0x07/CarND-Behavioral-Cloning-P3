@@ -95,20 +95,20 @@ model.add(Dropout(0.25))
 
 model.add(Flatten())
 
-#model.add(Dense(1164))
+model.add(Dense(1164))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-#model.add(Dropout(0.5))
+model.add(Dropout(0.5))
 
 model.add(Dense(100))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-#model.add(Dropout(0.5))
+model.add(Dropout(0.5))
 
 model.add(Dense(50))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-#model.add(Dropout(0.5))
+model.add(Dropout(0.5))
 
 model.add(Dense(10))
 #model.add(BatchNormalization())
@@ -118,6 +118,6 @@ model.add(Dropout(0.5))
 model.add(Dense(1))
 model.summary()
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, batch_size=128, validation_split=0.2, shuffle=True, epochs=10)
+model.fit(X_train, y_train, batch_size=128, validation_split=0.2, shuffle=True, epochs=5)
 
 model.save('model.h5')
