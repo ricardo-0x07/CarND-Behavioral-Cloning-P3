@@ -19,7 +19,7 @@ measurements = []
 
 def resize_function(image):
     image = image[60:140]
-    image = cv2.resize(image, (160, 45), interpolation = cv2.INTER_AREA)
+    image = cv2.resize(image, (64, 64), interpolation = cv2.INTER_AREA)
     #image = image.reshape(45,160,1)
     return  image
 
@@ -58,62 +58,62 @@ y_train = np.array(augmented_measurements)
 
 model = Sequential()
 #model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
-model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(45,160,3)))
+model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(64,64,3)))
 #model.add(Lambda(lambda x: resize_function(x)))
 
 model.add(Conv2D(24, (5, 5), strides=1, padding='same'))
 model.add(BatchNormalization(axis=1))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.25))
+#model.add(Dropout(0.25))
 
 model.add(Conv2D(36, (5, 5), strides=1, padding='same'))  
 model.add(BatchNormalization(axis=1))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.25))
+#model.add(Dropout(0.25))
 
 model.add(Conv2D(48, (5, 5), strides=1, padding='same'))  
 model.add(BatchNormalization(axis=1))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
+model.add(MaxPooling2D())
+#model.add(Dropout(0.25))
+
+model.add(Conv2D(64, (3, 3), padding='same'))  
+model.add(BatchNormalization(axis=1))
+model.add(Activation('elu'))
 model.add(MaxPooling2D())
 model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (3, 3), padding='same'))  
 model.add(BatchNormalization(axis=1))
-model.add(Activation('relu'))
+model.add(Activation('elu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.25))
-
-model.add(Conv2D(64, (3, 3), padding='same'))  
-model.add(BatchNormalization(axis=1))
-model.add(Activation('relu'))
-model.add(MaxPooling2D())
-model.add(Dropout(0.25))
+#model.add(Dropout(0.25))
 
 #model.summary()
 
 model.add(Flatten())
 
-#model.add(Dense(1164))
-#model.add(BatchNormalization())
-#model.add(Activation('relu'))
-#model.add(Dropout(0.5))
-
-model.add(Dense(100))
-#model.add(BatchNormalization())
-#model.add(Activation('relu'))
-#model.add(Dropout(0.5))
-
-model.add(Dense(50))
-#model.add(BatchNormalization())
-#model.add(Activation('relu'))
-#model.add(Dropout(0.5))
-
-model.add(Dense(10))
+model.add(Dense(1164, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
 model.add(Dropout(0.5))
+
+model.add(Dense(100, activation='elu'))
+#model.add(BatchNormalization())
+#model.add(Activation('relu'))
+#model.add(Dropout(0.5))
+
+model.add(Dense(50, activation='elu'))
+#model.add(BatchNormalization())
+#model.add(Activation('relu'))
+#model.add(Dropout(0.5))
+
+model.add(Dense(10, activation='elu'))
+#model.add(BatchNormalization())
+#model.add(Activation('relu'))
+#model.add(Dropout(0.5))
 
 model.add(Dense(1))
 model.summary()
