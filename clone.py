@@ -28,7 +28,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
     low_steer = 0
     steerings = []
     for line in itertools.islice(reader, 0, 33000):
-        if float(line[3]) <= 0.85:
+        if float(line[3]) <= 0.085:
             low_steer += 1
             if (low_steer % 3) == 0:
                 steerings.append(line)
@@ -72,34 +72,34 @@ model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(64,64,3)))
 #model.add(Lambda(lambda x: resize_function(x)))
 
 model.add(Conv2D(24, (5, 5), strides=1, padding='same'))
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
-model.add(Dropout(0.5))
+model.add(Dropout(0.25))
 
 model.add(Conv2D(36, (5, 5), strides=1, padding='same'))  
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 model.add(Dropout(0.25))
 
 model.add(Conv2D(48, (5, 5), strides=1, padding='same'))  
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (3, 3), padding='same'))  
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 model.add(Dropout(0.25))
 
-#model.add(Conv2D(64, (3, 3), padding='same'))  
+model.add(Conv2D(64, (3, 3), padding='same'))  
 #model.add(BatchNormalization(axis=1))
-#model.add(Activation('elu'))
-#model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
+model.add(Activation('elu'))
+model.add(MaxPooling2D())
+model.add(Dropout(0.25))
 
 #model.summary()
 
@@ -118,7 +118,7 @@ model.add(Dropout(0.25))
 model.add(Dense(50, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-#model.add(Dropout(0.5))
+model.add(Dropout(0.5))
 
 model.add(Dense(10, activation='elu'))
 #model.add(BatchNormalization())
@@ -128,6 +128,6 @@ model.add(Dropout(0.25))
 model.add(Dense(1))
 model.summary()
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, batch_size=128, validation_split=0.2, shuffle=True, epochs=3)
+model.fit(X_train, y_train, batch_size=128, validation_split=0.2, shuffle=True, epochs=5)
 
 model.save('model.h5')
