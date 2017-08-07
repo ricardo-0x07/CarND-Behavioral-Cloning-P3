@@ -25,8 +25,18 @@ def resize_function(image):
 
 with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
+    low_steer = 0
+    steerings = []
     for line in itertools.islice(reader, 0, 33000):
-        #print('line: ', line)
+        if float(line[3]) <= 0.85:
+            low_steer += 1
+            if (low_steer % 2) > 0:
+                steerings.append(line)
+        else:
+            steerings.append(line)
+    for line in steerings:
+    #for line in itertools.islice(reader, 0, 33000):  
+      #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
         correction = 0.0442 # this is a parameter to tune
