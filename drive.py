@@ -50,7 +50,7 @@ controller.set_desired(set_speed)
 
 def resize_function(image):
     image = image[60:140]  
-    image = cv2.resize(image, (160, 45), interpolation = cv2.INTER_AREA)
+    image = cv2.resize(image, (64, 64), interpolation = cv2.INTER_AREA)
     #image = image.reshape(64,64,1)
     return  image
 
