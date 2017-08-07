@@ -30,7 +30,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
     for line in itertools.islice(reader, 0, 33000):
         if float(line[3]) <= 0.85:
             low_steer += 1
-            if (low_steer % 2) > 0:
+            if (low_steer % 3) == 0:
                 steerings.append(line)
         else:
             steerings.append(line)
@@ -39,7 +39,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
       #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.0442 # this is a parameter to tune
+        correction = 0.0446 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
@@ -105,15 +105,15 @@ model.add(MaxPooling2D())
 
 model.add(Flatten())
 
-model.add(Dense(1164, activation='elu'))
+#model.add(Dense(1164, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-model.add(Dropout(0.25))
+#model.add(Dropout(0.25))
 
 model.add(Dense(100, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-#model.add(Dropout(0.5))
+model.add(Dropout(0.25))
 
 model.add(Dense(50, activation='elu'))
 #model.add(BatchNormalization())
@@ -123,7 +123,7 @@ model.add(Dense(50, activation='elu'))
 model.add(Dense(10, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-model.add(Dropout(0.5))
+model.add(Dropout(0.25))
 
 model.add(Dense(1))
 model.summary()
