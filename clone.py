@@ -30,7 +30,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
     for line in itertools.islice(reader, 0, 33000):
         if float(line[3]) <= 0.085:
             low_steer += 1
-            if (low_steer % 3) == 0:
+            if (low_steer % 2) == 0:
                 steerings.append(line)
         else:
             steerings.append(line)
@@ -39,7 +39,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
       #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.075 # this is a parameter to tune
+        correction = 0.085 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
