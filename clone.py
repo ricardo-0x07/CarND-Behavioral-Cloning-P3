@@ -40,7 +40,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
       #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.55 # this is a parameter to tune
+        correction = 0.7 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
@@ -73,31 +73,31 @@ model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(64,64,3)))
 #model.add(Lambda(lambda x: resize_function(x)))
 
 model.add(Conv2D(24, (5, 5), strides=1, padding='same'))
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 #model.add(Dropout(0.25))
 
 model.add(Conv2D(36, (5, 5), strides=1, padding='same'))  
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 #model.add(Dropout(0.25))
 
 model.add(Conv2D(48, (5, 5), strides=1, padding='same'))  
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 #model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (3, 3), padding='same'))  
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 #model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (3, 3), padding='same'))  
-model.add(BatchNormalization(axis=1))
+#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
 #model.add(Dropout(0.25))
