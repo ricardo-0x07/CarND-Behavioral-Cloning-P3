@@ -39,7 +39,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
       #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.165 # this is a parameter to tune
+        correction = 0.15 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
@@ -48,7 +48,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
             file_name = source_path.split('/')[-1]
             current_path = './data/set3/IMG/' + file_name
             image = cv2.imread(current_path)
-            if image != None:
+            if image is not None:
                 image = resize_function(image)
                 images.append(image)
             else:
