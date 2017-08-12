@@ -48,8 +48,11 @@ with open('./data/set3/driving_log.csv') as csvfile:
             file_name = source_path.split('/')[-1]
             current_path = './data/set3/IMG/' + file_name
             image = cv2.imread(current_path)
-            image = resize_function(image)
-            images.append(image)
+            if image != None:
+                image = resize_function(image)
+                images.append(image)
+            else:
+                print('current path', current_path)
         measurements.append(steering_center)
         measurements.append(steering_left)
         measurements.append(steering_right)
