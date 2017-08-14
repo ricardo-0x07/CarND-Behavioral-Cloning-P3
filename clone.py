@@ -21,7 +21,13 @@ def resize_function(image):
     image = cv2.resize(image, (64, 64), interpolation = cv2.INTER_AREA)
     #image = image.reshape(45,160,1)
     return  image
+def process(x):
+    pass
 
+def generator(features, labels, batch_size):
+    batch_features = np.zeros((batch_size, 64, 64, 3))
+    batch_labels = np.zeros((batch_zize, 1))
+    
 with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     low_steer = 0
@@ -39,7 +45,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
       #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.2 # this is a parameter to tune
+        correction = 0.15 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
