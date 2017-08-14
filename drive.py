@@ -68,6 +68,7 @@ def telemetry(sid, data):
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
         rbg_image_array = Image.fromarray(np.roll(image_array, 1, axis=-1))
+        rbg_image_array = np.asarray(rbg_image_array)
         resized_rbg_image_array = resize_function(rbg_image_array)
         steering_angle = float(model.predict(resized_rbg_image_array[None, :, :, :], batch_size=1))
 
