@@ -39,7 +39,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
       #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.9 # this is a parameter to tune
+        correction = 0.15 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
@@ -74,28 +74,28 @@ model = Sequential()
 model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(64,64,3)))
 #model.add(Lambda(lambda x: resize_function(x)))
 
-model.add(Conv2D(32, (3, 3), strides=1, padding='same'))
-model.add(BatchNormalization(axis=1))
-model.add(Activation('elu'))
-model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
-
-model.add(Conv2D(48, (3, 3), strides=1, padding='same'))  
-model.add(BatchNormalization(axis=1))
-model.add(Activation('elu'))
-model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
-
-model.add(Conv2D(64, (3, 3), strides=1, padding='same'))  
-model.add(BatchNormalization(axis=1))
-model.add(Activation('elu'))
-model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
-
-#model.add(Conv2D(64, (3, 3), padding='same'))  
+model.add(Conv2D(6, (5, 5), strides=1, padding='same'))
 #model.add(BatchNormalization(axis=1))
-#model.add(Activation('elu'))
-#model.add(MaxPooling2D())
+model.add(Activation('elu'))
+model.add(MaxPooling2D())
+#model.add(Dropout(0.25))
+
+model.add(Conv2D(6, (5, 5), strides=1, padding='same'))  
+#model.add(BatchNormalization(axis=1))
+model.add(Activation('elu'))
+model.add(MaxPooling2D())
+#model.add(Dropout(0.25))
+
+model.add(Conv2D(6, (3, 3), strides=1, padding='same'))  
+#model.add(BatchNormalization(axis=1))
+model.add(Activation('elu'))
+model.add(MaxPooling2D())
+#model.add(Dropout(0.25))
+
+model.add(Conv2D(6, (3, 3), padding='same'))  
+#model.add(BatchNormalization(axis=1))
+model.add(Activation('elu'))
+model.add(MaxPooling2D())
 #model.add(Dropout(0.25))
 
 #model.add(Conv2D(64, (3, 3), padding='same'))  
@@ -108,30 +108,30 @@ model.add(MaxPooling2D())
 
 model.add(Flatten())
 
-model.add(Dropout(0.5))
+#model.add(Dropout(0.25))
 
-model.add(Dense(1164, activation='elu'))
+#model.add(Dense(1164, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-model.add(Dropout(0.5))
+#model.add(Dropout(0.25))
 
 model.add(Dense(100, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-model.add(Dropout(0.5))
+model.add(Dropout(0.20))
 
 model.add(Dense(50, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-model.add(Dropout(0.5))
+model.add(Dropout(0.20))
 
 model.add(Dense(10, activation='elu'))
 #model.add(BatchNormalization())
 #model.add(Activation('relu'))
-model.add(Dropout(0.25))
+model.add(Dropout(0.5))
 
 model.add(Dense(1))
 #model.summary()
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, batch_size=1024, validation_split=0.2, shuffle=True, epochs=5)
+model.fit(X_train, y_train, batch_size=1024, validation_split=0.2, shuffle=True, epochs=10)
 model.save('model.h5')
