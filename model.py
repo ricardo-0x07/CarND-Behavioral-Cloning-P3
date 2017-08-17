@@ -4,8 +4,6 @@ import cv2
 import numpy as np
 import os
 from keras import backend as K
-#if K.backend() != "tensorflow":
-#    os.environ['KERAS_BACKEND'] = "tensorflow"
 from keras.models import Sequential
 from keras.layers import Input, Dropout, Activation, Flatten, Dense, Lambda
 from keras.layers.convolutional import Conv2D
@@ -17,23 +15,21 @@ images = []
 measurements = []
 
 def resize_function(image):
+    """Crop and Resize image.
+    Args: image: image data
+    Return: cropped and resized image 
+    """
     image = image[60:140]
     image = cv2.resize(image, (64, 64), interpolation = cv2.INTER_AREA)
-    #image = image.reshape(45,160,1)
     return  image
-def process(x):
-    pass
 
-def generator(features, labels, batch_size):
-    batch_features = np.zeros((batch_size, 64, 64, 3))
-    batch_labels = np.zeros((batch_zize, 1))
-    
+# Open and read csv file
 with open('./data/set3/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     low_steer = 0
     steerings = []
-    #for line in itertools.islice(reader, 0, 15000):
     for line in reader:
+        # Filter out 70% of the data with steering angles between -0.0185 and 0.0185 
         if float(line[3]) <= 0.0185 and float(line[3]) >= 0.0185:
             low_steer += 1
             if (low_steer % 3) == 0:
@@ -41,8 +37,6 @@ with open('./data/set3/driving_log.csv') as csvfile:
         else:
             steerings.append(line)
     for line in steerings:
-    #for line in itertools.islice(reader, 0, 33000):  
-      #print('line: ', line)
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
         correction = 0.25 # this is a parameter to tune
@@ -69,75 +63,51 @@ augmented_measurements = []
 for image, measurement in zip(images, measurements):
     augmented_images.append(image)
     augmented_measurements.append(measurement)
+    # Flip images
     augmented_images.append(cv2.flip(image, 1))
+    # Flip steering measurement
     augmented_measurements.append(measurement*-1.0)
 
 X_train = np.array(augmented_images)
 y_train = np.array(augmented_measurements)
 
 model = Sequential()
-#model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
+# Normalize image data
 model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(64,64,3)))
-#model.add(Lambda(lambda x: resize_function(x)))
-
+# Add convolution layers
 model.add(Conv2D(6, (5, 5), strides=1, padding='same'))
-#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
 
 model.add(Conv2D(6, (5, 5), strides=1, padding='same'))  
-#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
 
 model.add(Conv2D(6, (3, 3), strides=1, padding='same'))  
-#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
 
 model.add(Conv2D(6, (3, 3), padding='same'))  
-#model.add(BatchNormalization(axis=1))
 model.add(Activation('elu'))
 model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
-
-#model.add(Conv2D(64, (3, 3), padding='same'))  
-#model.add(BatchNormalization(axis=1))
-#model.add(Activation('elu'))
-#model.add(MaxPooling2D())
-#model.add(Dropout(0.25))
-
-#model.summary()
-
+# Add flatten layer
 model.add(Flatten())
-
-#model.add(Dropout(0.25))
-
-#model.add(Dense(1164, activation='elu'))
-#model.add(BatchNormalization())
-#model.add(Activation('relu'))
-#model.add(Dropout(0.25))
-
+# Add dense layers
 model.add(Dense(100, activation='elu'))
-#model.add(BatchNormalization())
-#model.add(Activation('relu'))
 model.add(Dropout(0.20))
 
 model.add(Dense(50, activation='elu'))
-#model.add(BatchNormalization())
-#model.add(Activation('relu'))
 model.add(Dropout(0.20))
 
 model.add(Dense(10, activation='elu'))
-#model.add(BatchNormalization())
-#model.add(Activation('relu'))
 model.add(Dropout(0.5))
 
 model.add(Dense(1))
-#model.summary()
+# Print model summary
+model.summary()
+# Compile model
 model.compile(loss='mse', optimizer='adam')
+# Run model
 model.fit(X_train, y_train, batch_size=1024, validation_split=0.2, shuffle=True, epochs=10)
+# Save model
 model.save('model.h5')
