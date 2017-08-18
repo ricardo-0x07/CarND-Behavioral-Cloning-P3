@@ -36,7 +36,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
     for line in reader:
         if float(line[3]) <= 0.0185:
             low_steer += 1
-            if (low_steer % 3) == 0:
+            if (low_steer % 2) == 0:
                 steerings.append(line)
         else:
             steerings.append(line)
