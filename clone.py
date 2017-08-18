@@ -34,7 +34,7 @@ with open('./data/set3/driving_log.csv') as csvfile:
     steerings = []
     #for line in itertools.islice(reader, 0, 15000):
     for line in reader:
-        if float(line[3]) <= 0.0185 and float(line[3]) >= 0.0185:
+        if float(line[3]) <= 0.085 and float(line[3]) >= 0.085:
             low_steer += 1
             if (low_steer % 3) == 0:
                 steerings.append(line)
@@ -139,5 +139,5 @@ model.add(Dropout(0.5))
 model.add(Dense(1))
 #model.summary()
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, batch_size=1024, validation_split=0.2, shuffle=True, epochs=10)
+model.fit(X_train, y_train, batch_size=1024, validation_split=0.2, shuffle=True, epochs=5)
 model.save('model.h5')
