@@ -50,15 +50,15 @@ The model.py file contains the code for training and saving the convolution neur
 
 ####1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 5x5 and 3x3 filter sizes and depths of 6 (model.py lines 77-93) 
+My model consists of a convolution neural network with 5x5 and 3x3 filter sizes and depths of 6 (model.py lines 66-84) 
 
-The model includes ELU layers after each Convolution and Fully connected layers except the output layer to introduce nonlinearity (code lines 79, 83, 87, 91, 96, 99, 102), and the data is normalized in the model using a Keras lambda layer (code line 76). 
+The model includes ELU layers after each Convolution and Fully connected layers except the output layer to introduce nonlinearity, and the data is normalized in the model using a Keras lambda layer (code line 68). 
 
 ####2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce over-fitting (model.py lines 97, 100, 103). The models architecture was adjusted several times to address over-fitting. Also attempted to use batch normalization between the convolution layers.
+The model contains dropout layers in order to reduce over-fitting (model.py lines 89, 92, 95). The models architecture was adjusted several times to address over-fitting. Also attempted to use batch normalization between the convolution layers.
 
-The model was trained and validated on different data sets to ensure that the model was not over-fitting (code line 111). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not over-fitting in the keras Sequence model compile function (code line 103). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 ####3. Model parameter tuning
 
@@ -66,7 +66,7 @@ The model used an adam optimizer, so the learning rate was not tuned manually (m
 
 ####4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was created to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road. 
 
 For details about how I created the training data, see the next section. 
 
@@ -84,15 +84,13 @@ In order to gauge how well the model was working, I split my image and steering 
 
 To combat the over-fitting, I iteratively modified the model a convolution and fully connected layer, reduce the filter depth on the remaining convolution layers and included dropout on the fully connected layers.
 
-Then I used a correction factor to compensate for the car pulling to the left and filtered out 70% of the data with car going straight (<=0.0185) to mitigate the basis in the data for car to go straight.
-
 The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track. I collected recovery data at those spot to improve the driving behavior in these cases. Some corners were very problematic and recovery data didn't seem to help so collected data of the car taking those turns perfectly one time and added it to the data set repeatedly until the car could take the turn perfectly
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
 ####2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted is illustrated in the table below:
+The final model architecture (model.py lines 66-99) consisted is illustrated in the table below:
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
@@ -143,7 +141,7 @@ To augment the data set, I also flipped images and angles thinking that this wou
 ![alt text][image6]
 ![alt text][image7]
 
-After the collection process, I had X number of data points. I then preprocessed this data by cropping the unneeded upper and lower portions of the images , resizing the to 64x64, and created flipped duplicates.
+After the collection process and preprocessing, I had 339,868 data points. The data was preprocessed by cropping the unneeded upper and lower portions of the images , resizing the to 64x64,  created flipped duplicates. Note. Images from the side cameras were also used with steering measurements computed to encourage the car to avoid pull to the sides of the road.
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 

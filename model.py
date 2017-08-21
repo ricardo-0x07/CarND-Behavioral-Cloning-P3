@@ -29,17 +29,9 @@ with open('./data/set3/driving_log.csv') as csvfile:
     low_steer = 0
     steerings = []
     for line in reader:
-        # Filter out 70% of the data with steering angles between -0.0185 and 0.0185 
-        if float(line[3]) <= 0.0185 and float(line[3]) >= 0.0185:
-            low_steer += 1
-            if (low_steer % 3) == 0:
-                steerings.append(line)
-        else:
-            steerings.append(line)
-    for line in steerings:
         steering_center = float(line[3])
         # create adjusted steering measurements for the side camera images
-        correction = 0.25 # this is a parameter to tune
+        correction = 0.23 # this is a parameter to tune
         steering_left = steering_center + correction
         steering_right = steering_center - correction
         # read in images from center, left and right cameras
