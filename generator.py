@@ -2,11 +2,6 @@ import csv
 import cv2
 import numpy as np
 import os
-from keras import backend as K
-from keras.models import Sequential
-from keras.layers import Input, Dropout, Activation, Flatten, Dense, Lambda
-from keras.layers.convolutional import Conv2D
-from keras.layers.pooling import MaxPooling2D
 import sklearn
 from sklearn.model_selection import train_test_split
 
@@ -72,48 +67,3 @@ def generator(samples, batch_size=32):
             X_train = np.array(augmented_images)
             y_train = np.array(augmented_angles)
             yield sklearn.utils.shuffle(X_train, y_train)
-
-# compile and train the model using the generator function
-train_generator = generator(train_samples, batch_size=1024)
-validation_generator = generator(validation_samples, batch_size=1024)
-
-model = Sequential()
-# Normalize image data
-model.add(Lambda(lambda x: (x/255.0) - 0.5, input_shape=(64,64,3)))
-# Add convolution layers
-model.add(Conv2D(6, (5, 5), strides=1, padding='same'))
-model.add(Activation('elu'))
-model.add(MaxPooling2D())
-
-model.add(Conv2D(6, (5, 5), strides=1, padding='same'))  
-model.add(Activation('elu'))
-model.add(MaxPooling2D())
-
-model.add(Conv2D(6, (3, 3), strides=1, padding='same'))  
-model.add(Activation('elu'))
-model.add(MaxPooling2D())
-
-model.add(Conv2D(6, (3, 3), padding='same'))  
-model.add(Activation('elu'))
-model.add(MaxPooling2D())
-# Add flatten layer
-model.add(Flatten())
-# Add dense layers
-model.add(Dense(100, activation='elu'))
-model.add(Dropout(0.20))
-
-model.add(Dense(50, activation='elu'))
-model.add(Dropout(0.20))
-
-model.add(Dense(10, activation='elu'))
-model.add(Dropout(0.5))
-
-model.add(Dense(1))
-# Print model summary
-model.summary()
-# Compile model
-model.compile(loss='mse', optimizer='adam')
-# Run model
-model.fit_generator(train_generator, samples_per_epoch=len(train_samples), validation_data=validation_generator,nb_val_samples=len(validation_samples), nb_epoch=10)
-# Save model
-model.save('model.h5')
