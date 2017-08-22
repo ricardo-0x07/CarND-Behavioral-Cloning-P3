@@ -26,7 +26,7 @@ def resize_function(image):
 def generator(samples, batch_size=32):
     num_samples = len(samples)
     while 1: # Loop forever so the generator never terminates
-        shuffle(samples)
+        sklearn.utils.shuffle(samples)
         for offset in range(0, num_samples, batch_size):
             batch_samples = samples[offset:offset+batch_size]
 
@@ -50,8 +50,8 @@ def generator(samples, batch_size=32):
                 left_angle = center_angle + correction
                 right_angle = center_angle - correction
                 angles.append(center_angle)
+                angles.append(left_angle)
                 angles.append(right_angle)
-                angles.append(steering_right)
                 augmented_images = []
                 augmented_angles = []
                 for image, angle in zip(images, angles):
